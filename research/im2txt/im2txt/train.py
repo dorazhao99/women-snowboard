@@ -18,7 +18,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import sys
 
+sys.path.append('./im2txt/')
+sys.path.append('.')
 import tensorflow as tf
 from tensorflow.python import debug as tf_debug
 try:
@@ -104,7 +107,7 @@ def main(unused_argv):
   if not tf.gfile.IsDirectory(train_dir):
     tf.logging.info("Creating training directory: %s", train_dir)
     tf.gfile.MakeDirs(train_dir)
-
+  print('graph')
   #go from flags to dict
   g = tf.Graph()
   with g.as_default():
@@ -162,7 +165,7 @@ def main(unused_argv):
         inception_restore(sess)
         saver.restore(sess, FLAGS.init_from)
       model.init_fn = restore_full_model
-
+  print('train')
   # Run training.
   if FLAGS.debug:
     tf.contrib.slim.learning.train(

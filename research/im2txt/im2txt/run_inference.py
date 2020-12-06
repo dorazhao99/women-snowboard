@@ -59,11 +59,12 @@ def main(_):
     model = inference_wrapper.InferenceWrapper()
     restore_fn = model.build_graph_from_config(configuration.ModelConfig(), FLAGS.checkpoint_path)
   g.finalize()
-
+  print('Test')	
   # Create the vocabulary.
   vocab = vocabulary.Vocabulary(FLAGS.vocab_file)
 
   filenames = glob.glob(FLAGS.input_files)
+  print(filenames)	
   # for file_pattern in FLAGS.input_files.split(","):
   #   filenames.extend(tf.gfile.Glob(file_pattern))
   # tf.logging.info("Running caption generation on %d files matching %s",
@@ -85,7 +86,8 @@ def main(_):
         captions = generator.consensus_NN(sess, image, FLAGS.caption_path, FLAGS.train_data_dir, FLAGS.pickle_file)
       else:
         captions = generator.beam_search(sess, image)
-      image_id = int(filename.split('_')[-1].split('.')[0])
+#      image_id = int(filename.split('_')[-1].split('.')[0])
+      image_id = int(filename.split('/')[-1].split('.')[0])
       if FLAGS.use_nn:
         sentence = captions
       else:
@@ -94,7 +96,7 @@ def main(_):
           sentence = sentence[:-1]
         sentence = " ".join(sentence)
         sentence += '.'
-      caption_dict = {'caption': sentence, 'image_id': image_id }
+      caption_dict = {'caption': sentence, 'image_id': image_id, 'filename': filename }
       caption_dicts.append(caption_dict)
       if i % 10 == 0:
           sys.stdout.write('\n%d/%d: (img %d) %s' %(i, len(filenames), image_id, sentence))

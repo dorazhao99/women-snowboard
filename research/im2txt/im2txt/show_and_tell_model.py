@@ -26,18 +26,19 @@ from __future__ import print_function
 import sys
 import tensorflow as tf
 
-try:
-    from im2txt.ops import image_embedding
-    from im2txt.ops import image_processing
-    from im2txt.ops import inputs as input_ops
-except:
-    sys.path.append('im2txt/ops/')
-    sys.path.append('inference_utils/')
-    import image_embedding
-    import image_processing
-    import inputs as input_ops
+sys.path.append('./im2txt/')
+sys.path.append('.')
 
-from inference_utils import vocabulary
+#try:
+from im2txt.ops import image_embedding
+from im2txt.ops import image_processing
+from im2txt.ops import inputs as input_ops
+#except:
+ #   import image_embedding
+  #  import image_processing
+   # import inputs as input_ops
+
+from im2txt.inference_utils import vocabulary
 
 vocab_file = 'data/word_counts.txt'
 try:
@@ -267,7 +268,6 @@ class ShowAndTellModel(object):
           input_queue_capacity_factor=self.config.input_queue_capacity_factor,
           num_reader_threads=self.config.num_input_reader_threads)
       input_queues.append(input_queue)
-
       if self.flags['blocked_image'] or self.flags['two_input_queues']:
           #start a new input queue for the blocked images
           input_queue2 = input_ops.prefetch_input_data(
@@ -300,7 +300,6 @@ class ShowAndTellModel(object):
                 caption_feature=self.config.caption_feature_name)
             image = self.process_image(encoded_image, thread_id=thread_id)
             images_and_captions_list[i].append([image, caption])
-             
       # Batch inputs.
 
       queue_capacity = (2 * self.config.num_preprocess_threads *
@@ -322,7 +321,7 @@ class ShowAndTellModel(object):
           all_input_seqs.append(outputs[1])
           all_target_seqs.append(outputs[2])
           all_input_masks.append(outputs[3]) 
-
+      print(len(all_images))
       self.target_seqs = all_target_seqs 
       self.input_mask = all_input_masks 
     self.images = tf.concat(all_images, 0)
